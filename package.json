@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.mjs",
     "check": "node --check server.mjs && node --check public/app.js && node --check public/core.js && node --check public/pricing.js",
-    "test": "node tests/storage-ui.mjs && node tests/gear-filters.mjs && node tests/finder-welcome.mjs && node tests/market-safety.mjs && node tests/market-resume.mjs && node tests/hosting.mjs"
+    "test": "node tests/stored-copy-reuse.mjs && node tests/storage-ui.mjs && node tests/gear-filters.mjs && node tests/finder-welcome.mjs && node tests/market-safety.mjs && node tests/market-resume.mjs && node tests/hosting.mjs"
   },
   "engines": {
     "node": ">=24"
