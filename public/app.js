@@ -246,3 +246,6 @@ function equipmentStatSummary(stats){
  const hidden=new Set(['tear_dmg_factor','explosion_dmg_factor','electra_dmg_factor','burn_dmg_factor','chemical_burn_dmg_factor','radiation_protection','thermal_protection','biological_protection','psycho_protection']);
  return '<div class="equipmentStatGrid">'+Object.entries(stats).filter(([key,value])=>!hidden.has(key)&&typeof value==='number'&&Number.isFinite(value)&&Math.abs(value)>=0.005).sort(([a],[b])=>{const ai=priority.indexOf(a),bi=priority.indexOf(b);return(ai<0?999:ai)-(bi<0?999:bi);}).map(([key,value])=>'<span><span>'+esc(labels[key]||data.names[key]||key.replaceAll('_',' '))+'</span><b>'+f(value)+(percentages.has(key)?'%':key==='max_weight_bonus'?' kg':'')+'</b></span>').join('')+'</div>';
 }
+
+$('dataCalculationsLink').onclick=event=>{event.preventDefault();$('dataCalculationsDialog').showModal();};
+$('closeDataCalculations').onclick=()=>$('dataCalculationsDialog').close();
