@@ -379,3 +379,12 @@ input:focus,select:focus{box-shadow:none}
 .art .artifactActions [data-exclude]:hover{background:#3d3322!important;border-color:#bb975f!important;color:#f3d69f!important}
 .art .artifactActions .excludeFromCard:focus-visible{outline:2px solid #e2bb73;outline-offset:2px}
 .art .artifactActions .excludeFromCard:active{background:#18291c!important}
+
+/* Artifact actions stay tucked into an inline disclosure. */
+.artifactOptions{position:relative;clear:both;margin:8px 0 0;padding:0;border:0;background:none;overflow:visible}
+.artifactOptions>summary{display:inline-flex;align-items:center;gap:7px;padding:4px 0;list-style:none;font-size:11px;font-weight:500;color:#b7c8ae;cursor:pointer;line-height:1.4}
+.artifactOptions>summary::-webkit-details-marker{display:none}.artifactOptions>summary:after{content:'⌄';font-size:12px;color:#91a287}.artifactOptions[open]>summary:after{content:'⌃'}.artifactOptions>summary:hover{color:#e7cf9a}.artifactOptions>summary:focus-visible{outline:1px solid #d7b677;outline-offset:3px;border-radius:2px}
+.artifactOptions>.artifactActions{position:relative;display:flex;flex-direction:column;gap:4px;margin:5px 0 0;padding:5px;border:1px solid #52634b;border-radius:4px;background:#162119;box-shadow:none;min-width:0}
+.art .artifactOptions .artifactActions .excludeFromCard,.compactVariation .art .artifactOptions .artifactActions .excludeFromCard{justify-content:flex-start;min-height:28px!important;padding:6px 8px!important;border:0!important;border-radius:2px;background:transparent!important;color:#d1ddc9!important;font-size:11px!important;font-weight:400;text-align:left}
+.art .artifactOptions .artifactActions .excludeFromCard:hover{background:#2e3c2b!important;color:#f1e1c1!important}
+.artifactOptions:not([open])>.artifactActions{display:none}
