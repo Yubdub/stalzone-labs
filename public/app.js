@@ -234,9 +234,7 @@ function renderGettingStarted(){
  </section>`;
 }
 
-function collectionBuildNotes(r,armor,container,configuration){
- const equipment=(armor?.levels[configuration.armorLevel]?.speed_modifier||0)+(container?.levels[0]?.speed_modifier||0),artifacts=(r.raw.speed_modifier||0)*(container?.levels[0]?.effectiveness??100)/100;
- const movement=[['equipment',equipment],['artifacts',artifacts],['total',r.s.speed||0]].filter(([,value])=>Math.abs(value)>=0.005);
- const infection=infections.filter(key=>Math.abs(r.s[key]||0)>=0.0005).map(key=>esc(data.names[key])+': '+f(r.s[key],3));
- return '<div class="collectionNotes">'+(movement.length?'<span>Movement speed: '+movement.map(([label,value])=>label+' '+f(value)+'%').join(' · ')+'</span>':'')+(Math.abs(r.s.running_speed||0)>=0.005?'<span>Running Speed: '+f(r.s.running_speed)+'%</span>':'')+'<span>'+(r.safe?'Within infection limits':'Exceeds infection limits')+(infection.length?' · '+infection.join(' · '):'')+'</span></div>';
+function collectionBuildNotes(r){
+ const entries=infections.filter(key=>Math.abs(r.s[key]||0)>=0.0005);
+ return '<section class="collectionInfections" aria-label="Infection levels"><div class="infectionSectionHeading"><h4>Infection levels</h4><span class="'+(r.safe?'positive':'negative')+'">'+(r.safe?'✓ Within infection limits':'Exceeds infection limits')+'</span></div>'+(entries.length?'<div class="metrics">'+entries.map(key=>'<div class="metric"><b>'+f(r.s[key],3)+'</b><span>'+esc(data.names[key])+'</span></div>').join('')+'</div>':'')+'</section>';
 }
