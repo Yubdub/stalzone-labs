@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check public/app.js && node --check public/core.js && node --check public/pricing.js"
+    "check": "node --check server.mjs && node --check public/app.js && node --check public/core.js && node --check public/pricing.js",
+    "test": "node tests/hosting.mjs"
   },
   "engines": {
     "node": ">=24"

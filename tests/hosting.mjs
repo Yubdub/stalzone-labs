@@ -1,3 +1,4 @@
+import http from 'node:http';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
 const folder=fs.mkdtempSync(path.join(os.tmpdir(),'stalzone-hosting-'));
@@ -5,7 +6,7 @@ process.env.MARKET_CACHE_DIR=folder;process.env.RENDER='true';process.env.RENDER
 fs.writeFileSync(path.join(folder,'EU.json'),JSON.stringify({region:'EU',items:{test:{groups:[],history:[{private:true}]}},generatedAt:'2026-10-28T00:00:00Z'}));
 const {server}=await import('../server.mjs');await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const base='http://127.0.0.1:'+server.address().port;
-const request=(url,headers={})=>fetch(base+url,{headers:{Host:'stalzone-test.onrender.com',...headers}});
+const request=(url,headers={})=>new Promise((resolve,reject)=>{http.get(base+url,{headers:{Host:'stalzone-test.onrender.com',...headers}},res=>{let text='';res.on('data',chunk=>text+=chunk);res.on('end',()=>resolve({status:res.statusCode,json:async()=>JSON.parse(text)}));}).on('error',reject);});
 try{
  assert.equal((await request('/healthz')).status,200);
  assert.equal((await request('/')).status,200);
