@@ -17,7 +17,11 @@ Run npm run check for JavaScript syntax checks.
 
 ## Deployment
 
-This is the current local-server version. Public hosting still requires configurable port and host validation, durable market storage, and shared refresh coordination. Do not deploy this version unchanged to Render.
+Render settings: Node runtime, branch main, build command npm run check, start command npm start, health check /healthz. Attach a persistent disk at /var/data and set MARKET_CACHE_DIR=/var/data/market-cache. Add approved EXBO credentials as private environment variables. Render supplies PORT and its public hostname automatically. For a custom domain, set PUBLIC_URL to its full HTTPS URL.
+
+Market refresh jobs are shared across visitors; only one runs at a time. Recently collected artifact data is reused for 15 minutes, including manual requests, to prevent visitors repeatedly collecting the same data. Regional caches are saved atomically on disk. Build searches run in browser workers.
+
+The server can start without EXBO credentials using the included NA snapshot; live refresh and player lookup remain unavailable until configured.
 
 ## Licensing
 
