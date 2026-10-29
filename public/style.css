@@ -359,3 +359,14 @@ input:focus,select:focus{box-shadow:none}
 .marketRegionButtons button.active{box-shadow:none}
 .marketRegionButtons button.active:before{box-shadow:none}
 .finderWelcome{background:#121d17;border-top-width:1px}
+
+/* Compact navigation centered in the masthead. */
+.labsMasthead{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'brand navigation market';align-items:center;column-gap:28px;row-gap:14px}
+.labsMasthead .labsIdentity{grid-area:brand;min-width:0}
+.labsMasthead>.workspaceTabs{grid-area:navigation;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:6px;margin:0;padding:0;border:0;min-width:0}
+.labsMasthead>.workspaceTabs button{min-width:0;padding:11px 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#aebca8;font-size:13px;font-weight:500;letter-spacing:0;white-space:nowrap;box-shadow:none}
+.labsMasthead>.workspaceTabs button:hover{color:#ece9dc;background:#ffffff04}
+.labsMasthead>.workspaceTabs button[aria-selected=true]{border:0;border-bottom:2px solid #d6b16d;background:transparent;color:#edcc8d;box-shadow:none;font-weight:600}
+.labsMasthead>.headerMarket{grid-area:market;margin:0;max-width:none}
+@media(max-width:1400px){.labsMasthead{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'brand market' 'navigation navigation';row-gap:8px}.labsMasthead>.workspaceTabs{justify-content:center}}
+@media(max-width:700px){.labsMasthead{grid-template-columns:minmax(0,1fr);grid-template-areas:'brand' 'market' 'navigation';row-gap:12px}.labsMasthead>.workspaceTabs{justify-content:flex-start;overflow-x:auto;padding-bottom:2px}.labsMasthead>.workspaceTabs button{padding:10px;font-size:12px}.labsMasthead>.headerMarket{width:auto;justify-self:start;flex-basis:auto}}
