@@ -396,3 +396,6 @@ input:focus,select:focus{box-shadow:none}
 .art .artifactOptions,.compactVariation .art .artifactOptions{padding:0!important;margin:7px 0 0!important;border:0!important;background:none}
 .art .artifactOptions>summary,.compactVariation .art .artifactOptions>summary{padding:2px 0!important;margin:0!important;font-size:10px;font-weight:400;line-height:1.35;color:#a9bba0;list-style:none}
 .art .artifactOptions>summary:after{font-size:10px;margin-left:0}
+
+#buildPanel .controlGroup.equipmentGroup{border-bottom:0}
+
