@@ -388,3 +388,11 @@ input:focus,select:focus{box-shadow:none}
 .art .artifactOptions .artifactActions .excludeFromCard,.compactVariation .art .artifactOptions .artifactActions .excludeFromCard{justify-content:flex-start;min-height:28px!important;padding:6px 8px!important;border:0!important;border-radius:2px;background:transparent!important;color:#d1ddc9!important;font-size:11px!important;font-weight:400;text-align:left}
 .art .artifactOptions .artifactActions .excludeFromCard:hover{background:#2e3c2b!important;color:#f1e1c1!important}
 .artifactOptions:not([open])>.artifactActions{display:none}
+
+/* One separator below equipment, with Storage credit beside the gear settings. */
+#buildPanel .equipmentGroup+.divide{border-top:0;padding-top:0;margin-top:12px}
+#buildPanel .equipmentGroup .storageCreditOption{margin:13px 0 0}
+/* Keep the small Options disclosure aligned with the artifact content. */
+.art .artifactOptions,.compactVariation .art .artifactOptions{padding:0!important;margin:7px 0 0!important;border:0!important;background:none}
+.art .artifactOptions>summary,.compactVariation .art .artifactOptions>summary{padding:2px 0!important;margin:0!important;font-size:10px;font-weight:400;line-height:1.35;color:#a9bba0;list-style:none}
+.art .artifactOptions>summary:after{font-size:10px;margin-left:0}
