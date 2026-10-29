@@ -328,3 +328,34 @@ body,input,select,button,summary{font-family:'Segoe UI',Tahoma,Arial,sans-serif}
 #armorStats .equipmentStatGrid b,#containerStats .equipmentStatGrid b{font-size:11px;font-weight:600;color:#e0e7d5}
 
 .siteFooter{margin-top:30px;padding:18px 0 0;border-top:1px solid #3a4535;color:#adbaa4}.aboutMenu{display:inline-block;margin:0;padding:0;border:0;background:none}.aboutMenu>summary{font-size:14px;font-weight:600;cursor:pointer;color:#d0d9c5}.aboutMenu nav{padding:12px 0 4px}.aboutMenu a{color:#d9bc7c;text-decoration:underline;text-underline-offset:3px;font-size:13px}.aboutMenu a:hover{color:#f3d998}.aboutDialog{width:min(850px,94vw);padding:24px}.aboutDialog .dialogTop{align-items:start;gap:18px;border-bottom:1px solid #3a4535;padding-bottom:12px;margin-bottom:16px}.aboutDialog h2{font-size:24px;margin:0}.aboutDialogContent p{font-size:14px;line-height:1.7;color:#bdc9b5;margin:0 0 16px}.aboutDialogContent a{color:#d9bc7c}
+
+/* Flat surfaces: retain the existing palette without gradient lighting or raised edges. */
+body{background-color:#0c1311;background-image:none}
+body:before{opacity:.25;mask-image:none}
+.layout>aside{background:#141d18;box-shadow:none}
+.build{background:#111a16;box-shadow:none}
+.build.valueRecommended{box-shadow:none}
+.ownedForm,.ownedRow,.upgradeBox{background:#131d18;box-shadow:none}
+.workspaceTabs button{background:#172019;box-shadow:none}
+.workspaceTabs button[aria-selected=true]{background:#302b20;box-shadow:none}
+.ownedCategoryTabs button[aria-selected=true]{background:#29271d;box-shadow:none}
+.primary,#saveEdit{background:#deb367;box-shadow:none}
+input,select{box-shadow:none}
+input:focus,select:focus{box-shadow:none}
+.art{background:color-mix(in srgb,var(--rarity,#777) 5%,#111a16);box-shadow:none;border-top-width:1px}
+.ownedRow .rarityBadge{box-shadow:none}
+.valueReason{background:#20251a}
+.accountLookup{background:#12201a;box-shadow:none}
+.playerHero{background:#1b2b24}
+.playerHero:before{background:none}
+.playerMonogram{background:#a6ad80}
+.selectedItemPreview{background:none}
+.searchLoading{background:#111a16}
+.searchSpinner,.sectionDot{box-shadow:none}
+#upgradeResults .upgradeComparison{box-shadow:none}
+.upgradePlan{background:#1b251c}
+.upgradeSnapshot{background:#152018}
+#upgradePanel .upgradeSlot.selected{box-shadow:none;border-color:var(--rarity)}
+.marketRegionButtons button.active{box-shadow:none}
+.marketRegionButtons button.active:before{box-shadow:none}
+.finderWelcome{background:#121d17;border-top-width:1px}
