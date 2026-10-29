@@ -17,7 +17,7 @@ $('editRows').addEventListener('input',e=>{if(e.target.dataset.field!=='quality'
 const auctionBase=()=>location.protocol==='file:'?'http://127.0.0.1:4180':location.origin;
 function rememberMarket(){try{localStorage.setItem('stalzone-market-'+marketRegion,JSON.stringify(market));}catch{}}
 async function loadRegionalPrices(){const region=marketRegion;try{const response=await fetch(auctionBase()+'/api/prices?region='+region,{signal:AbortSignal.timeout(5000)});if(!response.ok)throw Error('Price service unavailable');const body=await response.json();if(region!==marketRegion)return;market=mergeMarketSnapshots(body.market,marketRegion==='NA'?mergeMarketSnapshots(market,embeddedNAMarket):market);rememberMarket();cache.clear();marketStatus();}catch{marketStatus();$('refreshPrices').title='Offline snapshot; start the local auction service for updates.';}}
-async function refreshMarket(staleOnly=false,full=false){if(marketBusy||!data)return;const ids=relevantPriceIds();if(!full&&!ids.length){if(!staleOnly)$('refreshPrices').title='No artifacts available to refresh yet.';return;}marketBusy=true;const region=marketRegion,button=$('refreshPrices');button.disabled=true;$('refreshAllPrices').disabled=true;try{const response=await requestForegroundMarketRefresh(auctionBase()+'/api/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(full?{region,staleOnly,full:true}:{region,staleOnly,ids}),signal:AbortSignal.timeout(10000)});const status=await response.json();if(!response.ok)throw Error(status.error||'Refresh unavailable');for(let i=0;i<1200;i++){if(i)await new Promise(r=>setTimeout(r,1500));const response=await fetch(auctionBase()+'/api/prices?region='+region,{signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Price service unavailable');const body=await response.json();if(region!==marketRegion)return;market=mergeMarketSnapshots(body.market,marketRegion==='NA'?mergeMarketSnapshots(market,embeddedNAMarket):market);marketStatus();button.textContent=body.job?.running?'Refreshing '+body.job.completed+' / '+body.job.total+'…':'Refresh artifact prices';button.title=body.job?.running?'Refreshing '+region+' prices · '+body.job.completed+' / '+body.job.total+' artifact types · all rarity tiers · '+(body.job.priceGroups||0)+' price groups'+(body.job.partial?' · '+body.job.partial+' partial collections':''):body.job?.error||'Auction refresh complete';if(!body.job?.running){rememberMarket();cache.clear();if(!body.job?.error){marketStatus();queueOtherMarketRefreshes(region);}return;}}throw Error('Refresh is still running. Prices will be checked again automatically.');}catch(e){if(region===marketRegion)$('refreshPrices').title=String(e.message).includes('fetch')?'Live updates need Start STALZONE Lab.cmd running. Cached '+region+' prices remain available.':e.message;}finally{marketBusy=false;button.disabled=false;button.textContent='Refresh artifact prices';$('refreshAllPrices').disabled=false;}}
+async function refreshMarket(){return loadRegionalPrices();}
 $('refreshPrices').onclick=()=>refreshMarket(false,true);
 $('marketRegion').onchange=()=>{marketRegion=$('marketRegion').value;try{localStorage.setItem('stalzone-market-region',marketRegion);}catch{}let snapshot=null;try{snapshot=JSON.parse(localStorage.getItem('stalzone-market-'+marketRegion));}catch{}market=mergeMarketSnapshots(snapshot?.region===marketRegion?snapshot:null,marketRegion==='NA'?embeddedNAMarket:{region:marketRegion,items:{}});cache.clear();marketStatus();dirty();loadRegionalPrices().then(()=>{if($('autoPrices').checked)refreshMarket(true);});};
 $('autoPrices').onchange=()=>{try{localStorage.setItem('stalzone-auto-prices',String($('autoPrices').checked));}catch{}if($('autoPrices').checked)refreshMarket(true);};
@@ -25,7 +25,7 @@ const embeddedNAMarket=structuredClone(market);embeddedNAMarket.region='NA';
 try{const region=localStorage.getItem('stalzone-market-region');if(['NA','EU','SEA','RU'].includes(region)){marketRegion=region;$('marketRegion').value=region;} $('autoPrices').checked=localStorage.getItem('stalzone-auto-prices')!=='false';const snapshot=JSON.parse(localStorage.getItem('stalzone-market-'+marketRegion)||'null');market=mergeMarketSnapshots(snapshot?.region===marketRegion?snapshot:null,marketRegion==='NA'?embeddedNAMarket:{region:marketRegion,items:{}});}catch{}
 cache.clear();marketStatus();if(currentCfg&&currentCfg.marketRegion!==marketRegion)run();
 loadRegionalPrices().then(()=>{if($('autoPrices').checked)refreshMarket(true);});
-setInterval(()=>{if($('autoPrices').checked&&!document.hidden)refreshMarket(true);},15*60000);
+setInterval(()=>{if(!document.hidden)loadRegionalPrices();},15*60000);
 
 
 function restoreEdits(base){try{const saved=JSON.parse(localStorage.getItem("stalzone-edits-v4")||"null");if(saved&&JSON.stringify(saved.cfg)===JSON.stringify(currentCfg)){const edits=saved.builds.map(b=>({...evaluateEditedBuild(b.items,editEvaluationCfg(),data),edited:true})).filter(b=>b.safe&&b.matches);return[...edits,...base.filter(b=>!b.edited)];}}catch{}return base.filter(b=>!b.edited);}
@@ -179,48 +179,10 @@ function isDedicatedOffsetArtifact(artifact){const core=new Set(['radiation_accu
 // Warm other regional snapshots without changing displayed builds or selected prices.
 let backgroundMarketRefreshRunning=false;
 const pendingMarketRegions=new Set();
-function queueOtherMarketRefreshes(active){
- for(const region of ['NA','EU','SEA','RU'])if(region!==active)pendingMarketRegions.add(region);
- void refreshOtherMarkets();
-}
-async function refreshOtherMarkets(){
- if(backgroundMarketRefreshRunning)return;
- backgroundMarketRefreshRunning=true;
- try{
-  while(pendingMarketRegions.size){
-   if(marketBusy){await new Promise(r=>setTimeout(r,1500));continue;}
-   const region=pendingMarketRegions.values().next().value;
-   pendingMarketRegions.delete(region);
-   if(region===marketRegion)continue;
-   try{
-    const response=await fetch(auctionBase()+'/api/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region,staleOnly:true,full:true}),signal:AbortSignal.timeout(10000)});
-    if(response.status===409){pendingMarketRegions.add(region);await new Promise(r=>setTimeout(r,1500));continue;}
-    if(!response.ok)continue;
-    for(let i=0;i<1200;i++){
-     if(i)await new Promise(r=>setTimeout(r,1500));
-     const prices=await fetch(auctionBase()+'/api/prices?region='+region,{signal:AbortSignal.timeout(10000)});
-     if(!prices.ok)break;
-     const body=await prices.json();
-     let prior=null;try{prior=JSON.parse(localStorage.getItem('stalzone-market-'+region)||'null');}catch{}
-     const snapshot=mergeMarketSnapshots(body.market,prior?.region===region?prior:null);
-     try{localStorage.setItem('stalzone-market-'+region,JSON.stringify(snapshot));}catch{}
-     if(region===marketRegion){market=snapshot;marketStatus();}
-     if(!body.job?.running)break;
-    }
-   }catch{/* Keep cached prices when a background refresh is unavailable. */}
-  }
- }finally{backgroundMarketRefreshRunning=false;}
-}
+function queueOtherMarketRefreshes(){}
+async function refreshOtherMarkets(){}
 
-async function requestForegroundMarketRefresh(url,options){
- for(let i=0;i<1200;i++){
-  const response=await fetch(url,{...options,signal:AbortSignal.timeout(10000)});
-  if(response.status!==409)return response;
-  $('refreshPrices').textContent='Waiting for market refresh…';
-  await new Promise(r=>setTimeout(r,1500));
- }
- throw Error('Another market refresh is still running. Try again shortly.');
-}
+async function requestForegroundMarketRefresh(){throw Error('Market refresh is server managed.');}
 
 function gearColor(item){return ({DEFAULT:'#dce4dd',RANK_NEWBIE:'#9cd385',RANK_STALKER:'#8cbff2',RANK_VETERAN:'#ec91cb',RANK_MASTER:'#ed8e82',RANK_LEGEND:'#e1c77f'})[item?.color]||'#dce4dd';}
 function renderGearPicker(select){
@@ -255,3 +217,5 @@ function setupMarketRegionButtons(){
  select.addEventListener('change',updateMarketRegionButtons);updateMarketRegionButtons();
 }
 setupMarketRegionButtons();
+
+$('refreshPrices').hidden=true;$('refreshAllPrices').hidden=true;$('autoPrices').closest('label').hidden=true;

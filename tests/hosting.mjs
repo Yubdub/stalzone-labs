@@ -17,5 +17,6 @@ try{
  assert.equal((await request('/healthz',{Origin:'https://evil.example'})).status,403);
  assert.equal((await request('/healthz',{Origin:'https://stalzone-test.onrender.com'})).status,200);
  assert.equal((await request('/.env')).status,404);
+ const blocked=await new Promise((resolve,reject)=>{const req=http.request(base+'/api/refresh',{method:'POST',headers:{Host:'stalzone-test.onrender.com','Content-Type':'application/json'}},res=>{res.resume();res.on('end',()=>resolve(res.statusCode));});req.on('error',reject);req.end(JSON.stringify({region:'NA',full:true}));});assert.equal(blocked,403);
  console.log('Hosting checks passed: health, website, Render host/origin, disk cache restore, private history exclusion and invalid request handling.');
 }finally{await new Promise(resolve=>server.close(resolve));fs.rmSync(folder,{recursive:true,force:true});}

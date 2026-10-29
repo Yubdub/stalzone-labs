@@ -282,3 +282,5 @@ main{max-width:none;width:100%;padding-left:clamp(18px,2vw,40px);padding-right:c
 
 /* Regional market switch: compact field-console tabs. */
 .marketRegionButtons{display:flex;gap:5px;padding:0;border:0;border-radius:0;background:transparent;align-items:stretch}.marketRegionButtons button{position:relative;min-width:48px;padding:9px 12px 9px 20px;border:1px solid #3b493d;border-radius:2px 9px 2px 2px;background:#121c17;color:#9eae9e;font-size:11px;font-weight:700;letter-spacing:.07em;transition:background .15s,border-color .15s,color .15s}.marketRegionButtons button:before{content:'';position:absolute;left:9px;top:50%;width:4px;height:4px;margin-top:-2px;background:#526153;border-radius:50%}.marketRegionButtons button:hover{background:#223127;border-color:#7d9274;color:#edf0e5}.marketRegionButtons button.active{background:#283b2e;border-color:#a9bc92;color:#e1ebd1;box-shadow:inset 0 -2px #a9bc92}.marketRegionButtons button.active:before{background:#d6b56b;box-shadow:0 0 6px #d6b56b66}.marketRegionButtons button:focus-visible{outline:2px solid #d6b56b;outline-offset:3px}
+
+.headerMarket .marketActions{display:none!important}
