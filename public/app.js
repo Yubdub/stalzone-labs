@@ -207,7 +207,7 @@ function renderGearPicker(select){
 }
 document.addEventListener('click',event=>document.querySelectorAll('.gearPicker[open]').forEach(picker=>{if(!picker.contains(event.target))picker.open=false;}));
 
-function gearAllowedInPicker(item){return !['RANK_NEWBIE','RANK_STALKER'].includes(item?.color);}
+function gearAllowedInPicker(item){return !item||!['DEFAULT','RANK_NEWBIE','RANK_STALKER'].includes(item.color);}
 function updateMarketRegionButtons(){document.querySelectorAll('[data-market-region]').forEach(button=>{const active=button.dataset.marketRegion===$('marketRegion').value;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});}
 function setupMarketRegionButtons(){
  const select=$('marketRegion');select.hidden=true;
