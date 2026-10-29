@@ -370,3 +370,12 @@ input:focus,select:focus{box-shadow:none}
 .labsMasthead>.headerMarket{grid-area:market;margin:0;max-width:none}
 @media(max-width:1400px){.labsMasthead{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'brand market' 'navigation navigation';row-gap:8px}.labsMasthead>.workspaceTabs{justify-content:center}}
 @media(max-width:700px){.labsMasthead{grid-template-columns:minmax(0,1fr);grid-template-areas:'brand' 'market' 'navigation';row-gap:12px}.labsMasthead>.workspaceTabs{justify-content:flex-start;overflow-x:auto;padding-bottom:2px}.labsMasthead>.workspaceTabs button{padding:10px;font-size:12px}.labsMasthead>.headerMarket{width:auto;justify-self:start;flex-basis:auto}}
+
+/* Clear, compact artifact actions separated from the stat description. */
+.artifactActions{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:6px;clear:both;padding-top:9px;margin-top:8px;border-top:1px solid #56674b45}
+.art .artifactActions .excludeFromCard,.compactVariation .art .artifactActions .excludeFromCard{display:flex!important;align-items:center;justify-content:center;gap:4px;width:100%!important;min-height:34px;margin:0!important;padding:6px 7px!important;border:1px solid #667a60!important;border-radius:4px;background:#26382b!important;color:#e1ebda!important;font-family:inherit;font-size:11px!important;font-weight:600;line-height:1.25;text-align:center;cursor:pointer;box-shadow:none;white-space:normal;transition:background .12s,border-color .12s}
+.art .artifactActions [data-exclude]{background:#202a23!important;border-color:#536358!important;color:#c9d4c8!important}
+.art .artifactActions .excludeFromCard:hover{background:#36503b!important;border-color:#9bb48c!important;color:#fff!important}
+.art .artifactActions [data-exclude]:hover{background:#3d3322!important;border-color:#bb975f!important;color:#f3d69f!important}
+.art .artifactActions .excludeFromCard:focus-visible{outline:2px solid #e2bb73;outline-offset:2px}
+.art .artifactActions .excludeFromCard:active{background:#18291c!important}
