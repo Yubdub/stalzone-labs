@@ -1,7 +1,7 @@
 import http from 'node:http';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
-const folder=fs.mkdtempSync(path.join(os.tmpdir(),'stalzone-hosting-'));
+const folder=fs.mkdtempSync(path.join(process.cwd(),'tests','.hosting-'));
 process.env.MARKET_CACHE_DIR=folder;process.env.RENDER='true';process.env.RENDER_EXTERNAL_HOSTNAME='stalzone-test.onrender.com';
 fs.writeFileSync(path.join(folder,'EU.json'),JSON.stringify({region:'EU',items:{test:{groups:[],history:[{private:true}]}},generatedAt:'2026-10-28T00:00:00Z'}));
 const {server}=await import('../server.mjs');await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -19,4 +19,4 @@ try{
  assert.equal((await request('/.env')).status,404);
  const blocked=await new Promise((resolve,reject)=>{const req=http.request(base+'/api/refresh',{method:'POST',headers:{Host:'stalzone-test.onrender.com','Content-Type':'application/json'}},res=>{res.resume();res.on('end',()=>resolve(res.statusCode));});req.on('error',reject);req.end(JSON.stringify({region:'NA',full:true}));});assert.equal(blocked,403);
  console.log('Hosting checks passed: health, website, Render host/origin, disk cache restore, private history exclusion and invalid request handling.');
-}finally{await new Promise(resolve=>server.close(resolve));fs.rmSync(folder,{recursive:true,force:true});}
+}finally{await new Promise(resolve=>server.close(resolve));assert(folder.startsWith(path.join(process.cwd(),'tests')+path.sep));fs.rmSync(folder,{recursive:true,force:true});}

@@ -36,3 +36,9 @@ Local edits and commits do not change the live service. With Render auto-deploy 
 Refresh progress is checkpointed after each artifact. Interrupted collections resume after restart using each artifact’s collected timestamp; the six-hour regional cooldown is recorded only after completion. Failed runs wait at least 15 minutes (or the longer upstream pause) before retrying. Legacy attempted-start markers are ignored.
 
 Collection rotates through four-artifact batches across NA, EU, SEA, and RU so initial coverage reaches all markets before any one region finishes. Artifact-specific HTTP 400/404 failures are deferred for six hours without blocking other items. Other item failures wait 15 minutes; global upstream pauses still take precedence. The prices endpoint exposes collection status and the browser checks cached status once a minute without initiating EXBO requests.
+
+## Memory-bounded market storage
+
+Regional in-memory state contains price groups only. Raw history is stored as compressed per-artifact files on the persistent disk, limited to the last 30 days and up to 5,000 sampled rows per artifact (up to 256 per rarity/upgrade cohort). Price summaries use the incoming collection plus retained history; they remain estimates based on available samples. Old regional caches are migrated one artifact at a time; original .json caches are retained on disk for recovery, while future starts read compact .summary.json files. Oversized legacy history records retain their price summaries and original source rather than being loaded whole.
+
+Only one artifact is collected at a time. API pacing, regional rotation and pauses remain in effect. Static assets are streamed with backpressure. npm start limits the JavaScript heap to 192 MB to leave process headroom on a 512 MB instance. Memory readings are logged at startup and after collection batches. The memory regression runs legacy migration and repeated cache writes under a 128 MB heap limit.
