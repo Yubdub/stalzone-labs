@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --max-old-space-size=192 server.mjs",
     "check": "node --check server.mjs && node --check public/app.js && node --check public/core.js && node --check public/pricing.js && node --check market-store.mjs",
-    "test": "node --max-old-space-size=128 tests/market-memory.mjs && node tests/saved-to-optimizer.mjs && node tests/stored-copy-reuse.mjs && node tests/storage-ui.mjs && node tests/gear-filters.mjs && node tests/finder-welcome.mjs && node tests/market-safety.mjs && node tests/market-resume.mjs && node tests/hosting.mjs"
+    "test": "node tests/healing-storage-rules.mjs && node --max-old-space-size=128 tests/market-memory.mjs && node tests/saved-to-optimizer.mjs && node tests/stored-copy-reuse.mjs && node tests/storage-ui.mjs && node tests/gear-filters.mjs && node tests/finder-welcome.mjs && node tests/market-safety.mjs && node tests/market-resume.mjs && node tests/hosting.mjs"
   },
   "engines": {
     "node": ">=24"
