@@ -1,0 +1,14 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {evaluateEditedBuild,filterStats,optimizerReferenceResult,searchOwnedBuilds} from '../public/core.js';
+const data=JSON.parse(fs.readFileSync('public/data.json'));
+const specs=[['Atom',2,127.64],['Rime',4,154.45],['Sun',3,138.7],['Black Hole',3,141.94],['Fossil',2,125.25],['Viburnum Branch',2,124.08]];
+const items=specs.map(([name,rarity,quality])=>{const a=data.artefact.find(a=>a.name===name);return{id:a.id,rarity,quality,level:15,bonusKeys:a.bonus.map(b=>b.k).slice(0,3)};});
+const cfg={armor:data.armor.find(a=>a.name==='Centurion Armored Suit').id,armorLevel:15,container:data.containers.find(c=>c.name==='Overton Container').id,level:15,omitOwned:true,ownedInventory:items.map(i=>({...i,quantity:1})),market:{items:{}},filters:{},includeOrdinaryArtifacts:false};
+const base=evaluateEditedBuild(items,cfg,data);assert(base.safe);assert.equal(base.s.cost,0);assert(Math.abs(base.s.ehp-584.22979)<.001);
+for(const stat of filterStats.filter(s=>s.key!=='cost'))cfg.filters[stat.key]={min:Math.floor(((stat.key==='bullet_dmg_factor'?base.s.container_bullet_resistance:base.s[stat.key]||0)+1e-10)*100)/100,max:null};
+cfg.filters.cost={min:null,max:27000000};cfg.referenceBuild={cfg:{...cfg},items};
+const result=optimizerReferenceResult(data,cfg);assert(result?.matches&&result.safe);assert.equal(result.s.cost,0);assert.equal(searchOwnedBuilds(data,cfg,6).results.filter(r=>r.matches).length,1);
+assert.equal(optimizerReferenceResult(data,{...cfg,filters:{...cfg.filters,ehp:{min:700}}}),null);
+assert.equal(optimizerReferenceResult(data,{...cfg,rarityExclusions:{[items[0].id]:[2]}}),null);
+assert.equal(optimizerReferenceResult(data,{...cfg,filters:{...cfg.filters,cost:{min:1}}}),null);
+assert.equal(optimizerReferenceResult(data,{...cfg,referenceBuild:{...cfg.referenceBuild,items:items.slice(1)}}),null);
+console.log('Screenshot regression passed: six exact owned artifacts, EHP 584.23, all loaded minima, safe, zero purchase cost; changed targets/exclusions/budget and full slots still enforced.');
